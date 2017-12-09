@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall
-OBJFILES = main.o memory_region.o
+OBJFILES = src/main.o src/memory_region.o
 TARGET = bin/memory_maps
 
 all: $(TARGET)
