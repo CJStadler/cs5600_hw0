@@ -10,14 +10,17 @@ int main() {
   };
 
   char line[1000];
-  char addresses[100];
-  char permissions[100];
+  unsigned int starting_address;
+  unsigned int ending_address;
+  char permissions[4];
 
   printf("start\n");
 
   while (fgets(line, 1000, file) != NULL) {
-    sscanf(line, "%s %s * \n", addresses, permissions);
-    printf("%s\n", addresses);
+    sscanf(line, "%x-%x %s * \n", &starting_address, &ending_address,
+           permissions);
+    printf("%x\n", starting_address);
+    printf("%x\n", ending_address);
     printf("%s\n", permissions);
   };
 
