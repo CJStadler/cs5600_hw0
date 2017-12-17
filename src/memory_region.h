@@ -6,4 +6,4 @@ typedef struct MemoryRegion {
   int isExecutable;
 } memory_region;
 
-extern memory_region memory_region_from_line(char* line);
+extern memory_region memory_region_from_line(char *line);
