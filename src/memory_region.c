@@ -1,21 +1,22 @@
+#include <stdint.h>
 #include <stdio.h>
 
 #include "memory_region.h"
 
 memory_region memory_region_from_line(char *line) {
-  unsigned int starting_address;
-  unsigned int ending_address;
+  uintptr_t starting_address;
+  uintptr_t ending_address;
   char permissions[4];
 
   // Extract the addresses and permissions from the line.
-  sscanf(line, "%x-%x %s * \n", &starting_address, &ending_address,
+  sscanf(line, "%lx-%lx %s * \n", &starting_address, &ending_address,
          permissions);
 
   struct MemoryRegion region;
 
   // Construct pointers to the locations at the addresses.
-  region.start = (void *)&starting_address;
-  region.end = (void *)&ending_address;
+  region.start = (void *)starting_address;
+  region.end = (void *)ending_address;
 
   region.isReadable = permissions[0] == 'r';
   region.isWriteable = permissions[1] == 'w';
@@ -23,3 +24,13 @@ memory_region memory_region_from_line(char *line) {
 
   return (region);
 }
+
+int region_is_read_only(memory_region *region) {
+  return (region->isReadable && !region->isWriteable && !region->isExecutable);
+}
+
+int region_is_read_write(memory_region *region) {
+  return (region->isReadable && region->isWriteable && !region->isExecutable);
+}
+
+int region_size(memory_region *region) { return (region->end - region->start); }

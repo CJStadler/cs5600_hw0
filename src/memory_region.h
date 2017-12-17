@@ -8,3 +8,9 @@ typedef struct MemoryRegion {
 } memory_region;
 
 memory_region memory_region_from_line(char *line);
+
+int region_is_read_only(memory_region *region);
+
+int region_is_read_write(memory_region *region);
+
+int region_size(memory_region *region);
