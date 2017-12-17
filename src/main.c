@@ -1,37 +1,6 @@
 #include <stdio.h>
 
-// #include "memory_region.h"
-
-typedef struct MemoryRegion {
-  void *start; // Renamed from "startAddr" because the "address" is be an
-               // int, whereas this is a pointer to the location at the address.
-  void *end;   // Renamed from "endAddr".
-  int isReadable;
-  int isWriteable;
-  int isExecutable;
-} memory_region;
-
-memory_region memory_region_from_line(char *line) {
-  unsigned int starting_address;
-  unsigned int ending_address;
-  char permissions[4];
-
-  // Extract the addresses and permissions from the line.
-  sscanf(line, "%x-%x %s * \n", &starting_address, &ending_address,
-         permissions);
-
-  struct MemoryRegion r;
-
-  // Construct pointers to the locations at the addresses.
-  r.start = (void *)&starting_address;
-  r.end = (void *)&ending_address;
-
-  r.isReadable = permissions[0] == 'r';
-  r.isWriteable = permissions[1] == 'w';
-  r.isExecutable = permissions[2] == 'x';
-
-  return (r);
-}
+#include "memory_region.h"
 
 int main() {
   FILE *file = fopen("test.txt", "r");
