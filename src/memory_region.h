@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 typedef struct MemoryRegion {
   void *start; // Renamed from "startAddr" because the "address" is be an
                // int, whereas this is a pointer to the location at the address.
@@ -14,3 +16,5 @@ int region_is_read_only(memory_region *region);
 int region_is_read_write(memory_region *region);
 
 int region_size(memory_region *region);
+
+void write_region_to_file(memory_region *region, FILE *file);

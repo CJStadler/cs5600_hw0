@@ -34,3 +34,9 @@ int region_is_read_write(memory_region *region) {
 }
 
 int region_size(memory_region *region) { return (region->end - region->start); }
+
+void write_region_to_file(memory_region *region, FILE *file) {
+  char permissions_string[3];
+  fprintf(file, "%lx-%lx %s\n", (uintptr_t)region->start,
+          (uintptr_t)region->end, permissions_string);
+}
