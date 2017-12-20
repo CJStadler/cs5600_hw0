@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "memory_region.h"
 
@@ -36,7 +38,25 @@ int region_is_read_write(memory_region *region) {
 int region_size(memory_region *region) { return (region->end - region->start); }
 
 void write_region_to_file(memory_region *region, FILE *file) {
-  char permissions_string[3];
+  char *permissions_string = calloc(3, 1);
+  if (region->isReadable) {
+    strcat(permissions_string, "r");
+  } else {
+    strcat(permissions_string, "-");
+  }
+
+  if (region->isWriteable) {
+    strcat(permissions_string, "w");
+  } else {
+    strcat(permissions_string, "-");
+  }
+
+  if (region->isExecutable) {
+    strcat(permissions_string, "x");
+  } else {
+    strcat(permissions_string, "-");
+  }
+
   fprintf(file, "%lx-%lx %s\n", (uintptr_t)region->start,
           (uintptr_t)region->end, permissions_string);
 }

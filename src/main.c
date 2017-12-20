@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 
   printf("map_file: %s\n", map_filename);
 
-  FILE *map_file = fopen(map_filename, "r");
+  FILE *map_file = fopen("test.txt", "r");
   if (map_file == NULL) {
     printf("No such map_file %s.\n", map_filename);
     return (1);
