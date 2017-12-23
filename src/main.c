@@ -4,6 +4,24 @@
 
 #include "memory_region.h"
 
+char *map_filename_for_pid(char *pid) {
+  char path_start[] = "/proc/";
+  char path_end[] = "/maps";
+  int filename_length = strlen(pid) + strlen(path_start) + strlen(path_end);
+  char *map_filename = malloc(filename_length);
+
+  if (map_filename == NULL) {
+    printf("Failed to allocate memory for map_filename.\n");
+    map_filename = NULL;
+  } else {
+    strcat(map_filename, path_start);
+    strcat(map_filename, pid);
+    strcat(map_filename, path_end);
+  }
+
+  return (map_filename);
+}
+
 int main(int argc, char **argv) {
   char *pid;
   char *out_filename;
@@ -21,19 +39,14 @@ int main(int argc, char **argv) {
     }
   }
 
-  char *map_filename = malloc(strlen(pid) + 12);
+  char *map_filename = map_filename_for_pid(pid);
   if (map_filename == NULL) {
-    printf("Failed to allocate memory for map_filename.\n");
     return (1);
-  }
-
-  strcat(map_filename, "/proc/");
-  strcat(map_filename, pid);
-  strcat(map_filename, "/maps");
+  };
 
   printf("map_file: %s\n", map_filename);
 
-  FILE *map_file = fopen("test.txt", "r");
+  FILE *map_file = fopen(map_filename, "r");
   if (map_file == NULL) {
     printf("No such map_file %s.\n", map_filename);
     return (1);
@@ -48,7 +61,7 @@ int main(int argc, char **argv) {
   int read_write_total = 0;
 
   while (fgets(line, 1000, map_file) != NULL) {
-    memory_region region = memory_region_from_line(&line);
+    memory_region region = memory_region_from_line(line);
 
     if (region_is_read_only(&region)) {
       read_only_total += region_size(&region);

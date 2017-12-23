@@ -5,7 +5,7 @@
 
 #include "memory_region.h"
 
-memory_region memory_region_from_line(char *line) {
+memory_region memory_region_from_line(char line[]) {
   uintptr_t starting_address;
   uintptr_t ending_address;
   char permissions[4];
@@ -38,25 +38,32 @@ int region_is_read_write(memory_region *region) {
 int region_size(memory_region *region) { return (region->end - region->start); }
 
 void write_region_to_file(memory_region *region, FILE *file) {
-  char *permissions_string = calloc(3, 1);
+  char readable;
+  char writeable;
+  char executable;
+
   if (region->isReadable) {
-    strcat(permissions_string, "r");
+    readable = 'r';
   } else {
-    strcat(permissions_string, "-");
+    readable = '-';
   }
 
   if (region->isWriteable) {
-    strcat(permissions_string, "w");
+    writeable = 'w';
   } else {
-    strcat(permissions_string, "-");
+    writeable = '-';
   }
 
   if (region->isExecutable) {
-    strcat(permissions_string, "x");
+    executable = 'x';
   } else {
-    strcat(permissions_string, "-");
+    executable = '-';
   }
 
-  fprintf(file, "%lx-%lx %s\n", (uintptr_t)region->start,
-          (uintptr_t)region->end, permissions_string);
+  fprintf(file, "%lx-%lx ", (uintptr_t)region->start, (uintptr_t)region->end);
+
+  fputc(readable, file);
+  fputc(writeable, file);
+  fputc(executable, file);
+  fputc('\n', file);
 }

@@ -9,7 +9,7 @@ typedef struct MemoryRegion {
   int isExecutable;
 } memory_region;
 
-memory_region memory_region_from_line(char *line);
+memory_region memory_region_from_line(char line[]);
 
 int region_is_read_only(memory_region *region);
 
