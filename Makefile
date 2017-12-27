@@ -1,15 +1,23 @@
 CC = gcc
 CFLAGS = -Wall
-OBJFILES = src/main.o src/memory_region.o
-TARGET = bin/memory_maps
+READER_OBJFILES = src/map_reader.o src/memory_region.o
+WRITER_OBJFILES = src/map_writer.o src/memory_region.o
+READER_TARGET = bin/map_reader
+WRITER_TARGET = bin/map_writer
 
-all: $(TARGET)
+all: $(WRITER_TARGET) $(READER_TARGET)
 
-run: $(TARGET)
-	$(TARGET)
+run_reader: $(READER_TARGET)
+	$(READER_TARGET)
 
-$(TARGET): $(OBJFILES)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJFILES)
+run_writer: $(WRITER_TARGET)
+	$(WRITER_TARGET)
+
+$(READER_TARGET): $(READER_OBJFILES)
+	$(CC) $(CFLAGS) -o $(READER_TARGET) $(READER_OBJFILES)
+
+$(WRITER_TARGET): $(WRITER_OBJFILES)
+	$(CC) $(CFLAGS) -o $(WRITER_TARGET) $(WRITER_OBJFILES)
 
 clean:
-	rm -f $(OBJFILES) $(TARGET)
+	rm -f $(READER_OBJFILES) $(READER_TARGET) $(WRITER_OBJFILES) $(WRITER_TARGET)
