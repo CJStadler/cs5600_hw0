@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #include "memory_region.h"
 
@@ -20,6 +22,35 @@ char *map_filename_for_pid(char *pid) {
   }
 
   return (map_filename);
+}
+
+void run_map_reader(char *filename) {
+  pid_t child_pid = fork();
+  printf("PID: %i\n", child_pid);
+  if (child_pid == 0) { // child
+    char *reader_filename = "bin/map_reader";
+    char *newargv[] = {reader_filename, filename, NULL};
+    execv(reader_filename, newargv);
+  } else { // parent
+    int wstatus;
+    do {
+      pid_t w = waitpid(child_pid, &wstatus, WUNTRACED | WCONTINUED);
+      if (w == -1) {
+        perror("waitpid");
+        exit(EXIT_FAILURE);
+      }
+
+      if (WIFEXITED(wstatus)) {
+        printf("exited, status=%d\n", WEXITSTATUS(wstatus));
+      } else if (WIFSIGNALED(wstatus)) {
+        printf("killed by signal %d\n", WTERMSIG(wstatus));
+      } else if (WIFSTOPPED(wstatus)) {
+        printf("stopped by signal %d\n", WSTOPSIG(wstatus));
+      } else if (WIFCONTINUED(wstatus)) {
+        printf("continued\n");
+      }
+    } while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
+  }
 }
 
 int main(int argc, char **argv) {
@@ -52,8 +83,6 @@ int main(int argc, char **argv) {
     return (1);
   };
 
-  free(map_filename);
-
   FILE *out_file = fopen(out_filename, "w");
 
   char line[1000];
@@ -77,5 +106,7 @@ int main(int argc, char **argv) {
 
   fclose(map_file);
   fclose(out_file);
+
+  run_map_reader(map_filename);
   return (0);
 }

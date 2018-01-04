@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 #include "memory_region.h"
 
@@ -43,6 +44,7 @@ int main(int argc, char **argv) {
   int read_write_total = 0;
 
   while (fgets(line, 1000, map_file) != NULL) {
+    sleep(1);
     memory_region region = memory_region_from_line(line);
 
     if (region_is_read_only(&region)) {
